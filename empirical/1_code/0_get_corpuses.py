@@ -65,7 +65,7 @@ def get_text(soup):
 
 random.seed(42)
 corpuses_df = pd.DataFrame(columns=['url', 'corpus', 'page', 'book'])
-num_corpuses = 300
+num_corpuses = 100
 bar = Bar('Processing', max=num_corpuses)
 
 while corpuses_df.shape[0] < num_corpuses:
