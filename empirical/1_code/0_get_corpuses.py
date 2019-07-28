@@ -51,19 +51,21 @@ def get_text(soup):
             text_soup = get_soup(part_soup['href'])
             for script in text_soup(["script", "style"]):
                 script.extract()
-            corpus = regex.sub(' ', text_soup.get_text())
+            corpus = regex.sub(' ', text_soup.get_text()).lower()
+            corpus = ''.join(re.findall(r'[a-z]+', corpus))
             whole_corpus.append(corpus)
             del corpus, text_soup
-        return ' '.join(whole_corpus)
+        return ''.join(whole_corpus)
     #when book has no sub pages
     else:
         for script in soup(["script", "style"]):
             script.extract()
-        corpus = regex.sub(' ', soup.get_text())
+        corpus = regex.sub(' ', soup.get_text()).lower()
+        corpus = ''.join(re.findall(r'[a-z]+', corpus))
         return corpus           
             
 
-random.seed(42)
+random.seed('books-corpuses')
 corpuses_df = pd.DataFrame(columns=['url', 'corpus', 'page', 'book'])
 num_corpuses = 100
 bar = Bar('Processing', max=num_corpuses)
