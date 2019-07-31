@@ -3,7 +3,7 @@
 # Introduction
 
 """
-Web scraping book corpuses
+Extracting unigrams (letters) and bigrams (adjacent letters)
 """
 
 NAME = '1_unigrams_and_bigrams'
@@ -65,7 +65,7 @@ for i in bigrams.index:
 
 bigrams = bigrams.drop(repetitive+duped)
 
-#save to file
+# save to file
 unigrams.to_csv(os.path.join(pipeline, 'out', 'unigrams.csv'))
 bigrams.to_csv(os.path.join(pipeline, 'out', 'bigrams.csv'))
 
