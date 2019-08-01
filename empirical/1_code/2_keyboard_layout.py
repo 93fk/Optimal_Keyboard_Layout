@@ -67,7 +67,7 @@ x,y = np.meshgrid(xxx, yyy)
 z = skewnorm.pdf(y*0.1,0.45)*(skewnorm.pdf(x*0.035, 4)+skewnorm.pdf((x+10)*0.035, -4))
 max_z = np.amax(z)
 
-fig = plt.figure()
+fig = plt.figure(facecolor='w')
 ax = fig.add_subplot(111, aspect='equal')
 plt.xlim(-55,50)
 plt.ylim(-10,20)
@@ -76,9 +76,10 @@ for k,v in key_dict.items():
     new = v + (a,)
     key_dict[k] = new
     ax.add_patch(Rectangle(v, 8, 8, alpha=a, color='red'))
-    plt.text(v[0]+2, v[1]+4, k)
+    plt.text(v[0]+2, v[1]+4, k, color='black')
 plt.axis('off')
 plt.show()
+fig.savefig(os.path.join(pipeline, 'out', 'keyboard_layout.png'), facecolor='w')
 
 # Create network of keyboard keys
 Keyboard_net = nx.Graph()
@@ -86,20 +87,18 @@ Keyboard_net = nx.Graph()
 for K, V in key_dict.items():
     Keyboard_net.add_node(K, size=V[2])
     for k, v in key_dict.items():
-        if V[0] < v[0] and V[0] + 10 > v[0] and V[1] == 0:
-            if V[1] - v[1] == 10:
+        if V[0] < v[0] and V[0] + 10 > v[0] and V[1] == 0: # 'V' Key to the left
+            if V[1] - v[1] == 10: # 'V' Key above
                 w = abs(V[0] + 10 - v[0])*0.04
                 Keyboard_net.add_edge(K, k, weight=w)
-                #print(K+" "+k+": "+str(abs(V[0] + 10 - v[0])*0.04))
-            elif V[1] - v[1] == -10:
+            elif V[1] - v[1] == -10: # 'V' Key below
                 w = abs(V[0] + 10 - v[0])*0.08
                 Keyboard_net.add_edge(K, k, weight=w)
-                #print(K+" "+k+": "+str(abs(V[0] + 10 - v[0])*0.08))
-        elif V[0] < v[0] + 10 and V[0] + 10 > v[0] + 10 and V[1] == 0:
-            if V[1] - v[1] == 10:
+        elif V[0] < v[0] + 10 and V[0] + 10 > v[0] + 10 and V[1] == 0: # 'V' Key to the right
+            if V[1] - v[1] == 10: # 'V' Key above
                 w = abs(v[0] + 10 - V[0])*0.04
                 Keyboard_net.add_edge(K, k, weight=w)
-            elif V[1] - v[1] == -10:
+            elif V[1] - v[1] == -10: # 'V' Key below
                 w = abs(v[0] + 10 - V[0])*0.08
                 Keyboard_net.add_edge(K, k, weight=w)
         else:
@@ -107,23 +106,28 @@ for K, V in key_dict.items():
                 w = 1
                 Keyboard_net.add_edge(K, k, weight=w)
 
-""" Reference examples on how to save and load data
+# Delete unnecessary connections
+Keyboard_net.remove_edge('T', 'Y')
+Keyboard_net.remove_edge('G', 'H')
+Keyboard_net.remove_edge('B', 'N')
+Keyboard_net.remove_edge('Y', 'G')
+Keyboard_net.remove_edge('H', 'B')
 
--- Load data from 0_data folder -- 
+#vizualize network
+fig = plt.figure(facecolor='w')
+size = [(nx.degree_centrality(Keyboard_net)[node]+1.5)**12 for node in Keyboard_net.nodes()]
+weigth = [Keyboard_net[edge[0]][edge[1]]['weight']*10 for edge in Keyboard_net.edges()]
 
-    auto_df = pd.read_excel(os.path.join('empirical', '0_data', 'external', 'auto.xls'))
+pos = {}
+for key, value in key_dict.items():
+    pos[key] = np.array([value[0], value[1]/10])
 
--- Save data to pipeline folder --
- 
-    auto_df['log_weight'] = np.log(auto_df['weight'])  
-    auto_df.to_excel(os.path.join(pipeline, 'out', 'auto.xls'))
-
--- Load data from other pipeline folder -- 
-
-    auto_df = pd.read_excel(os.path.join('empirical', '2_pipeline', '0_load_data', 'out', 'auto.xls'))
-
-"""
-
+nx.draw_networkx_nodes(Keyboard_net, pos, node_size=size, edgecolors='black', alpha=0.80)
+nx.draw_networkx_edges(Keyboard_net, pos, width=weigth, alpha=0.50, arrowstyle='simple')
+nx.draw_networkx_labels(Keyboard_net, pos, font_size=15, font_family='helvetica')
+plt.axis('off')
+plt.show()
+fig.savefig(os.path.join(pipeline, 'out', 'keyboard_network.png'), facecolor='w')
 
 
 # ----------
