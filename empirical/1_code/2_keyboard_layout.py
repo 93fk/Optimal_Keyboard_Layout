@@ -16,6 +16,7 @@ import os, re, math, time
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
+import pickle
 from matplotlib.patches import Rectangle
 from scipy.stats import skewnorm
 
@@ -105,6 +106,8 @@ for K, V in key_dict.items():
             if V[1] == v[1] and V[0] - v[0] == -10: # same row, adjacent keys
                 w = 1
                 Keyboard_net.add_edge(K, k, weight=w)
+
+pickle.dump(Keyboard_net, open(os.path.join(pipeline, 'out', 'Keyboard_net.p'), 'wb'))
 
 # Delete unnecessary connections
 Keyboard_net.remove_edge('T', 'Y')

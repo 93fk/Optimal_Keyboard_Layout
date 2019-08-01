@@ -10,25 +10,25 @@ NAME = '0_get_corpuses'
 PROJECT = 'Optimal_Keyboard_Layout'
 PYTHON_VERSION = '3.6.8'
 
-## Imports  
+## Imports
 
 import os, re, random, requests, time
 import pandas as pd
 from bs4 import BeautifulSoup
 from progress.bar import Bar
 
-## Set working directory  
+## Set working directory
 
 workdir = re.sub("(?<={})[\w\W]*".format(PROJECT), "", os.getcwd())
 os.chdir(workdir)
 
-## Set  up pipeline folder if missing  
+## Set  up pipeline folder if missing
 
 if os.path.exists(os.path.join('empirical', '2_pipeline')):
     pipeline = os.path.join('empirical', '2_pipeline', NAME)
 else:
     pipeline = os.path.join('2_pipeline', NAME)
-    
+
 if not os.path.exists(pipeline):
     os.makedirs(pipeline)
     for folder in ['out', 'store', 'tmp']:
