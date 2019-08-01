@@ -25,7 +25,6 @@ from scipy.stats import skewnorm
 workdir = re.sub("(?<={})[\w\W]*".format(PROJECT), "", os.getcwd())
 os.chdir(workdir)
 
-
 ## Set  up pipeline folder if missing
 
 if os.path.exists(os.path.join('empirical', '2_pipeline')):
@@ -107,7 +106,6 @@ for K, V in key_dict.items():
                 w = 1
                 Keyboard_net.add_edge(K, k, weight=w)
 
-pickle.dump(Keyboard_net, open(os.path.join(pipeline, 'out', 'Keyboard_net.p'), 'wb'))
 
 # Delete unnecessary connections
 Keyboard_net.remove_edge('T', 'Y')
@@ -115,6 +113,8 @@ Keyboard_net.remove_edge('G', 'H')
 Keyboard_net.remove_edge('B', 'N')
 Keyboard_net.remove_edge('Y', 'G')
 Keyboard_net.remove_edge('H', 'B')
+
+pickle.dump(Keyboard_net, open(os.path.join(pipeline, 'out', 'Keyboard_net.p'), 'wb'))
 
 #vizualize network
 fig = plt.figure(facecolor='w')
@@ -138,4 +138,22 @@ fig.savefig(os.path.join(pipeline, 'out', 'keyboard_network.png'), facecolor='w'
 # ----------
 """
 Here you leave any code snippets or temporary code that you don't need but don't want to delete just yet
+
+Kn = nx.Graph()
+
+for K, V in key_dict.items():
+    Kn.add_node(K, size=V[2])
+    for k, v in key_dict.items():
+        if V[1] == v[1]:
+            if abs(V[0] - v[0]) == 10:
+                w = 1
+                Kn.add_edge(K, k, weight=w)
+        else:
+            w = abs(V[0] - v[0]) # ALMOST!
+            if w > 0 and w < 10:
+                if V[1] - v[1] == 10:
+                    Kn.add_edge(K, k, weight=w*0.04)
+                elif V[1] - v[1] == -10:
+                    Kn.add_edge(K, k, weight=w*0.08)
+Kn.__dict__
 """
