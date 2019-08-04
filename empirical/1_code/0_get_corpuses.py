@@ -62,8 +62,7 @@ def get_text(soup):
             script.extract()
         corpus = regex.sub(' ', soup.get_text()).lower()
         corpus = ''.join(re.findall(r'[a-z]+', corpus))
-        return corpus           
-            
+        return corpus
 
 random.seed('books-corpuses')
 corpuses_df = pd.DataFrame(columns=['url', 'corpus', 'page', 'book'])
@@ -77,7 +76,7 @@ while corpuses_df.shape[0] < num_corpuses:
     page_soup = get_soup(f'idx{page_index}.html')
 
     book_index = random.randint(0, len(page_soup.find_all('a'))-1)
-    
+
     #check if a book is already in the DataFrame
     b1 = corpuses_df['page'] == page_index
     b2 = corpuses_df['book'] == book_index

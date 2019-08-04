@@ -42,9 +42,9 @@ if not os.path.exists(pipeline):
 # ---------
 
 key_dict = dict()
-top = 'QWERTYUIOP'
-middle = 'ASDFGHJKL'
-bottom = 'ZXCVBNM'
+top = 'qwertyuiop'
+middle = 'asdfghjkl'
+bottom = 'zxcvbnm'
 
 t = (t for t in np.linspace(-53, 37, 10))
 for letter in top:
@@ -85,7 +85,7 @@ fig.savefig(os.path.join(pipeline, 'out', 'keyboard_layout.png'), facecolor='w')
 Keyboard_net = nx.Graph()
 
 for K, V in key_dict.items():
-    Keyboard_net.add_node(K, size=V[2])
+    Keyboard_net.add_node(K, size=V[2]**3)
     for k, v in key_dict.items():
         if V[0] < v[0] and V[0] + 10 > v[0] and V[1] == 0: # 'V' Key to the left
             if V[1] - v[1] == 10: # 'V' Key above
@@ -108,17 +108,17 @@ for K, V in key_dict.items():
 
 
 # Delete unnecessary connections
-Keyboard_net.remove_edge('T', 'Y')
-Keyboard_net.remove_edge('G', 'H')
-Keyboard_net.remove_edge('B', 'N')
-Keyboard_net.remove_edge('Y', 'G')
-Keyboard_net.remove_edge('H', 'B')
+Keyboard_net.remove_edge('t', 'y')
+Keyboard_net.remove_edge('g', 'h')
+Keyboard_net.remove_edge('b', 'n')
+Keyboard_net.remove_edge('y', 'g')
+Keyboard_net.remove_edge('h', 'b')
 
 pickle.dump(Keyboard_net, open(os.path.join(pipeline, 'out', 'Keyboard_net.p'), 'wb'))
 
 #vizualize network
 fig = plt.figure(facecolor='w')
-size = [(nx.degree_centrality(Keyboard_net)[node]+1.5)**12 for node in Keyboard_net.nodes()]
+size = [size*2200 for size in nx.get_node_attributes(Keyboard_net,  'size').values()]
 weigth = [Keyboard_net[edge[0]][edge[1]]['weight']*10 for edge in Keyboard_net.edges()]
 
 pos = {}
@@ -127,7 +127,7 @@ for key, value in key_dict.items():
 
 nx.draw_networkx_nodes(Keyboard_net, pos, node_size=size, edgecolors='black', alpha=0.80)
 nx.draw_networkx_edges(Keyboard_net, pos, width=weigth, alpha=0.50, arrowstyle='simple')
-nx.draw_networkx_labels(Keyboard_net, pos, font_size=15, font_family='helvetica')
+nx.draw_networkx_labels(Keyboard_net, pos, font_size=30, font_family='helvetica')
 plt.axis('off')
 plt.show()
 fig.savefig(os.path.join(pipeline, 'out', 'keyboard_network.png'), facecolor='w')

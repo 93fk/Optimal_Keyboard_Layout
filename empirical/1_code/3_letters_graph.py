@@ -6,7 +6,7 @@
 Building network of letters
 """
 
-NAME = '3_letters_graph' ## Name of the notebook goes here (without the file extension!)
+NAME = '3_letters_graph'
 PROJECT = 'Optimal_Keyboard_Layout'
 PYTHON_VERSION = '3.6.8'
 
