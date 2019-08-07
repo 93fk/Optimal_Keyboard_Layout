@@ -73,14 +73,13 @@ for idx, letter in enumerate(zip(bottom, m_bottom)):
 
 # sample text for plotting purposes
 sample = pd.read_csv(os.path.join('empirical', '2_pipeline',
-                                       '0_get_corpuses', 'out', 'corpuses.csv'), nrows=1)
+                                       '0_get_corpuses', 'out', 'corpuses.csv'), nrows=50)
 uni_vectorizer = CountVectorizer(analyzer='char', ngram_range=(1,1))
-uni_transformed = uni_vectorizer.fit_transform(sample['corpus'])
+uni_transformed = uni_vectorizer.fit_transform(pd.Series(sample.iloc[40]['corpus']))
 unigrams = pd.DataFrame(uni_transformed.toarray(), columns=uni_vectorizer.get_feature_names()).sum(axis=0)
 unigrams = unigrams/max(unigrams)
 
 
-# FIGURE OUT TITLES
 fig = plt.figure(facecolor='w')
 
 ax1 = fig.add_subplot(211)
@@ -91,6 +90,7 @@ for k,v in key_dict.items():
     ax1.add_patch(Rectangle(v, 8, 8, alpha=a, color='red'))
     plt.text(v[0]+2, v[1]+4, k, color='black')
 plt.axis('off')
+ax1.set_title('QWERTY Layout')
 
 ax2 = fig.add_subplot(212)
 plt.xlim(-55,50)
@@ -100,7 +100,7 @@ for k,v in m_key_dict.items():
     ax2.add_patch(Rectangle(v, 8, 8, alpha=a, color='red'))
     plt.text(v[0]+2, v[1]+4, k, color='black')
 plt.axis('off')
-
+ax2.set_title('Optimized Layout')
 plt.show()
 
 

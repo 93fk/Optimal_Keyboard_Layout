@@ -46,6 +46,49 @@ Keyboard_net = pickle.load(open(os.path.join('empirical', '2_pipeline', '2_keybo
 Letters_net = pickle.load(open(os.path.join('empirical', '2_pipeline', '3_letters_graph',
                                             'out', 'Letters_net.p'), 'rb'))
 
+Keyboard_dict = {key:size['size'] for key, size in Keyboard_net._node.items()}
+Keyboard_Series = pd.Series(Keyboard_dict).sort_values(ascending=False).index
+letters_list = list(Keyboard_Series)
+
+mapping_dict = {}
+full_keyboard = list('qwertyuiopasdfghjklzxcvbnm')
+
+for key in Keyboard_Series:
+    letters_list.remove(key)
+    Modified_net = Keyboard_net.copy()
+    for letter in letters_list:
+        Modified_net.remove_node(letter)
+    if mapping_dict:
+        Modified_net = nx.relabel_nodes(Modified_net, mapping_dict)
+    letters_Series = pd.Series()
+    for letter in full_keyboard:
+        weight_sum = sum(Modified_net[key][edge]['weight'] * Letters_net[letter][edge[0]]['weight']\
+                        for edge in Modified_net[key].keys()\
+                        if edge[0] in Letters_net[letter])
+        size = Modified_net._node[key]['size'] * Letters_net._node[letter]['size']
+        letters_Series = letters_Series.append(pd.Series(weight_sum + 3*size, index=[letter]))
+    best_letter = letters_Series.sort_values(ascending=False).index[0]
+    mapping_dict[key] = best_letter+'_new'
+    full_keyboard.remove(best_letter)
+
+for k, v in mapping_dict.items():
+    mapping_dict[k] = v[0]
+
+pd.Series(mapping_dict).to_csv(os.path.join(pipeline, 'out', 'pairs.csv'))
+
+# ----------
+# Leftovers
+# ----------
+"""
+Here you leave any code snippets or temporary code that you don't need but don't want to delete just yet
+
+Letters_net['b'][edge.lower()]['weight'] * Keyboard_net['A'][edge]['weight']
+ if edge in Letters_net['b']
+sum(Letters_net['b'][edge.lower()]['weight'] * Keyboard_net['A'][edge]['weight'] for edge in Keyboard_net['A'].keys() if edge.lower() in Letters_net['b'])
+
+
+
+
 random.seed('network')
 
 best_score = 0
@@ -73,14 +116,4 @@ for i in range(10000000):
         best_pairs = pd.Series(pairs)
 
 best_pairs.to_csv(os.path.join(pipeline, 'out', 'pairs.csv'))
-
-# ----------
-# Leftovers
-# ----------
-"""
-Here you leave any code snippets or temporary code that you don't need but don't want to delete just yet
-
-Letters_net['b'][edge.lower()]['weight'] * Keyboard_net['A'][edge]['weight']
- if edge in Letters_net['b']
-sum(Letters_net['b'][edge.lower()]['weight'] * Keyboard_net['A'][edge]['weight'] for edge in Keyboard_net['A'].keys() if edge.lower() in Letters_net['b'])
 """
