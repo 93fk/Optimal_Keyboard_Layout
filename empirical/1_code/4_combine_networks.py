@@ -17,7 +17,6 @@ import pickle
 import random
 import pandas as pd
 import networkx as nx
-from progress.bar import Bar
 
 ## Set working directory
 
