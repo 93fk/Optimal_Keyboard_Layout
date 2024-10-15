@@ -57,4 +57,4 @@ The below illustration was based on 3 books that weren't used to produce results
 
 As it is in the case of Fig. 1.1. darker keys reflect higher relative frequency in a text corpus.
 
-# If you are looking for AI development services, check out: [https://neoteric.eu/](https://neoteric.eu/services/ai-development/)
+# If you are looking for AI development services, check out: [https://neoteric.eu/services/ai-development/](https://neoteric.eu/services/ai-development/)
